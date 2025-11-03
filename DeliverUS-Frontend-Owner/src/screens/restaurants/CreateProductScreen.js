@@ -45,7 +45,25 @@ export default function CreateProductScreen({ navigation, route }) {
 
   useEffect(() => {
     async function fetchProductCategories() {
-
+      try {
+        // TODO exam: fetch product categories for the restaurant using the appropriate endpoint
+        const fetchedProductCategories = await getCategoriesByRestaurant(route.params.id)
+        // TODO exam: END
+        const fetchedProductCategoriesReshaped = fetchedProductCategories.map((e) => {
+          return {
+            label: e.name,
+            value: e.id
+          }
+        })
+        setProductCategories(fetchedProductCategoriesReshaped)
+      } catch (error) {
+        showMessage({
+          message: `There was an error while retrieving product categories. ${error} `,
+          type: 'error',
+          style: GlobalStyles.flashStyle,
+          titleStyle: GlobalStyles.flashTextStyle
+        })
+      }
     }
     fetchProductCategories()
   }, [])

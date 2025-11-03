@@ -49,10 +49,33 @@ export default function EditProductScreen({ navigation, route }) {
 
   useEffect(() => {
     async function fetchProductCategories() {
-
+      try {
+        // TODO exam: fetch product categories for the restaurant using the appropriate endpoint. Check if product and product.restaurantId are defined
+        if (product.restaurantId != null) {
+          const fetchedProductCategories = await getCategoriesByRestaurant(product.restaurantId)
+          const fetchedProductCategoriesReshaped = fetchedProductCategories.map((e) => {
+            return {
+              label: e.name,
+              value: e.id
+            }
+          })
+          setProductCategories(fetchedProductCategoriesReshaped)
+        }
+        // TODO exam: END
+      } catch (error) {
+        showMessage({
+          message: `There was an error while retrieving product categories. ${error} `,
+          type: 'error',
+          style: GlobalStyles.flashStyle,
+          titleStyle: GlobalStyles.flashTextStyle
+        })
+      }
     }
     fetchProductCategories()
-  }, []
+  },
+    // TODO exam: only refetch if product changes
+    [product]
+    // TODO exam: END
   )
 
   useEffect(() => {

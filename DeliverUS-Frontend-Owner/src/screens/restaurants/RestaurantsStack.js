@@ -2,7 +2,9 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack'
 import React from 'react'
 import CreateProductScreen from './CreateProductScreen'
 import CreateRestaurantScreen from './CreateRestaurantScreen'
+import CreateProductCategoryScreen from './CreateProductCategoryScreen'
 import EditProductScreen from './EditProductScreen'
+import ProductCategoriesScreen from './ProductCategoriesScreen'
 import EditRestaurantScreen from './EditRestaurantScreen'
 import RestaurantDetailScreen from './RestaurantDetailScreen'
 import RestaurantsScreen from './RestaurantsScreen'
@@ -10,6 +12,7 @@ import OrdersScreen from '../orders/OrdersScreen'
 import EditOrderScreen from '../orders/EditOrderScreen'
 
 const Stack = createNativeStackNavigator()
+// TODO exam: add the screen for CreateProductCategoryScreen and ProductCategoriesScreen
 export default function RestaurantsStack() {
   return (
     <Stack.Navigator>
@@ -36,6 +39,18 @@ export default function RestaurantsStack() {
         component={CreateProductScreen}
         options={{
           title: 'Create Product'
+        }} />
+      <Stack.Screen
+        name='ProductCategoriesScreen'
+        component={ProductCategoriesScreen}
+        options={{
+          title: 'My Product Categories'
+        }} />
+      <Stack.Screen
+        name='CreateProductCategoryScreen'
+        component={CreateProductCategoryScreen}
+        options={{
+          title: 'Create Product Category'
         }} />
       <Stack.Screen
         name='EditRestaurantScreen'

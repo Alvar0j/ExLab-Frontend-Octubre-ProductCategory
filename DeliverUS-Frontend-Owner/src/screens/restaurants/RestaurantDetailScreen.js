@@ -36,6 +36,25 @@ export default function RestaurantDetailScreen({ navigation, route }) {
         </ImageBackground>
 
         <Pressable
+          onPress={() => navigation.navigate('ProductCategoriesScreen', { id: restaurant.id })
+          }
+          style={({ pressed }) => [
+            {
+              backgroundColor: pressed
+                ? GlobalStyles.brandGreenTap
+                : GlobalStyles.brandGreen
+            },
+            styles.button
+          ]}>
+          <View style={[{ flex: 1, flexDirection: 'row', justifyContent: 'center' }]}>
+            <MaterialCommunityIcons name='plus-circle' color={'white'} size={20} />
+            <TextRegular textStyle={styles.text}>
+              View categories
+            </TextRegular>
+          </View>
+        </Pressable>
+
+        <Pressable
           onPress={() => navigation.navigate('CreateProductScreen', { id: restaurant.id })
           }
           style={({ pressed }) => [
