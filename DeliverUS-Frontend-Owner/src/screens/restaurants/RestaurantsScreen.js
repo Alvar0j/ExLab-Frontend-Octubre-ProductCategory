@@ -14,7 +14,7 @@ import DeleteModal from '../../components/DeleteModal'
 import restaurantLogo from '../../../assets/restaurantLogo.jpeg'
 import { API_BASE_URL } from '@env'
 
-export default function RestaurantsScreen ({ navigation, route }) {
+export default function RestaurantsScreen({ navigation, route }) {
   const [restaurants, setRestaurants] = useState([])
   const [restaurantToBeDeleted, setRestaurantToBeDeleted] = useState(null)
   const { loggedInUser } = useContext(AuthorizationContext)
@@ -53,15 +53,15 @@ export default function RestaurantsScreen ({ navigation, route }) {
               },
               styles.actionButton
             ]}>
-          <View style={[{ flex: 1, flexDirection: 'row', justifyContent: 'center' }]}>
-            <MaterialCommunityIcons name='pencil' color={'white'} size={20}/>
-            <TextRegular textStyle={styles.text}>
-              Edit
-            </TextRegular>
-          </View>
-        </Pressable>
+            <View style={[{ flex: 1, flexDirection: 'row', justifyContent: 'center' }]}>
+              <MaterialCommunityIcons name='pencil' color={'white'} size={20} />
+              <TextRegular textStyle={styles.text}>
+                Edit
+              </TextRegular>
+            </View>
+          </Pressable>
 
-        <Pressable
+          <Pressable
             onPress={() => { setRestaurantToBeDeleted(item) }}
             style={({ pressed }) => [
               {
@@ -71,13 +71,13 @@ export default function RestaurantsScreen ({ navigation, route }) {
               },
               styles.actionButton
             ]}>
-          <View style={[{ flex: 1, flexDirection: 'row', justifyContent: 'center' }]}>
-            <MaterialCommunityIcons name='delete' color={'white'} size={20}/>
-            <TextRegular textStyle={styles.text}>
-              Delete
-            </TextRegular>
-          </View>
-        </Pressable>
+            <View style={[{ flex: 1, flexDirection: 'row', justifyContent: 'center' }]}>
+              <MaterialCommunityIcons name='delete' color={'white'} size={20} />
+              <TextRegular textStyle={styles.text}>
+                Delete
+              </TextRegular>
+            </View>
+          </Pressable>
         </View>
       </ImageCard>
     )
@@ -94,27 +94,27 @@ export default function RestaurantsScreen ({ navigation, route }) {
   const renderHeader = () => {
     return (
       <>
-      {loggedInUser &&
-      <Pressable
-        onPress={() => navigation.navigate('CreateRestaurantScreen')
+        {loggedInUser &&
+          <Pressable
+            onPress={() => navigation.navigate('CreateRestaurantScreen')
+            }
+            style={({ pressed }) => [
+              {
+                backgroundColor: pressed
+                  ? GlobalStyles.brandGreenTap
+                  : GlobalStyles.brandGreen
+              },
+              styles.button
+            ]}>
+            <View style={[{ flex: 1, flexDirection: 'row', justifyContent: 'center' }]}>
+              <MaterialCommunityIcons name='plus-circle' color={'white'} size={20} />
+              <TextRegular textStyle={styles.text}>
+                Create restaurant
+              </TextRegular>
+            </View>
+          </Pressable>
         }
-        style={({ pressed }) => [
-          {
-            backgroundColor: pressed
-              ? GlobalStyles.brandGreenTap
-              : GlobalStyles.brandGreen
-          },
-          styles.button
-        ]}>
-        <View style={[{ flex: 1, flexDirection: 'row', justifyContent: 'center' }]}>
-          <MaterialCommunityIcons name='plus-circle' color={'white'} size={20}/>
-          <TextRegular textStyle={styles.text}>
-            Create restaurant
-          </TextRegular>
-        </View>
-      </Pressable>
-    }
-    </>
+      </>
     )
   }
   const fetchRestaurants = async () => {
@@ -156,21 +156,21 @@ export default function RestaurantsScreen ({ navigation, route }) {
 
   return (
     <>
-    <FlatList
-      style={styles.container}
-      data={restaurants}
-      renderItem={renderRestaurant}
-      keyExtractor={item => item.id.toString()}
-      ListHeaderComponent={renderHeader}
-      ListEmptyComponent={renderEmptyRestaurantsList}
-    />
-    <DeleteModal
-      isVisible={restaurantToBeDeleted !== null}
-      onCancel={() => setRestaurantToBeDeleted(null)}
-      onConfirm={() => removeRestaurant(restaurantToBeDeleted)}>
+      <FlatList
+        style={styles.container}
+        data={restaurants}
+        renderItem={renderRestaurant}
+        keyExtractor={item => item.id.toString()}
+        ListHeaderComponent={renderHeader}
+        ListEmptyComponent={renderEmptyRestaurantsList}
+      />
+      <DeleteModal
+        isVisible={restaurantToBeDeleted !== null}
+        onCancel={() => setRestaurantToBeDeleted(null)}
+        onConfirm={() => removeRestaurant(restaurantToBeDeleted)}>
         <TextRegular>The products of this restaurant will be deleted as well</TextRegular>
         <TextRegular>If the restaurant has orders, it cannot be deleted.</TextRegular>
-    </DeleteModal>
+      </DeleteModal>
     </>
   )
 }

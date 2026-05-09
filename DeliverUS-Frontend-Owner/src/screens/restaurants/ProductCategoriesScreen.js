@@ -1,6 +1,149 @@
 /* eslint-disable react/prop-types */
 import { useContext, useEffect, useState } from 'react'
 import { StyleSheet, FlatList, Pressable, View } from 'react-native'
+import { MaterialCommunityIcons } from '@expo/vector-icons'
+import * as GlobalStyles from '../../styles/GlobalStyles'
+import TextRegular from '../../components/TextRegular'
+import { AuthorizationContext } from '../../context/AuthorizationContext'
+import { getRestaurantCategories } from '../../api/RestaurantEndpoints'
+import ImageCard from '../../components/ImageCard'
+import DeleteModal from '../../components/DeleteModal'
+import { remove } from '../../api/CategoriesEndpoints'
+import { showMessage } from 'react-native-flash-message'
+
+
+export default function ProductCategoriesScreen({ navigation, route }) {
+  const [categories, setCategories] = useState([])
+  const { loggedInUser } = useContext(AuthorizationContext)
+  const [categoryToBeDeleted, setCategoryToBeDeleted] = useState(null)
+
+  useEffect(() => {
+    if (loggedInUser) {
+      fetchCategories()
+    } else {
+      setCategories(null)
+    }
+  }, [loggedInUser, route])
+
+
+  const renderCategory = ({ item }) => {
+    return (
+      <View style={styles.categoryRow}>
+        <TextRegular style={styles.categoryName}>{item.name}</TextRegular>
+        <View style={styles.actionButtonsContainer}>
+          <Pressable
+            onPress={() => { setCategoryToBeDeleted(item) }}
+            style={({ pressed }) => [
+              {
+                backgroundColor: pressed
+                  ? GlobalStyles.brandPrimaryTap
+                  : GlobalStyles.brandPrimary
+              },
+              styles.actionButton
+            ]}>
+            <View style={[{ flex: 1, flexDirection: 'row', justifyContent: 'center' }]}>
+              <MaterialCommunityIcons name='delete' color={'white'} size={20} />
+              <TextRegular textStyle={styles.text}>
+                Delete
+              </TextRegular>
+            </View>
+          </Pressable>
+        </View>
+      </View>
+    )
+  }
+
+  const renderEmptyCategoriesList = () => {
+    return (
+      <TextRegular textStyle={styles.emptyList}>
+        No categories were retrieved. Are you logged in?
+      </TextRegular>
+    )
+  }
+
+
+  const renderHeader = () => {
+    return (
+      <>
+        {loggedInUser &&
+          <Pressable
+            onPress={() => navigation.navigate('CreateProductCategoryScreen', { id: route.params.id })
+            }
+            style={({ pressed }) => [
+              {
+                backgroundColor: pressed
+                  ? GlobalStyles.brandGreenTap
+                  : GlobalStyles.brandGreen
+              },
+              styles.button
+            ]}>
+            <View style={[{ flex: 1, flexDirection: 'row', justifyContent: 'center' }]}>
+              <MaterialCommunityIcons name='plus-circle' color={'white'} size={20} />
+              <TextRegular textStyle={styles.text}>
+                Create Product Categories
+              </TextRegular>
+            </View>
+          </Pressable>
+        }
+      </>
+    )
+  }
+
+  const fetchCategories = async () => {
+    try {
+      const fetchedCategories = await getRestaurantCategories()
+      setCategories(fetchedCategories)
+    } catch (error) {
+      showMessage({
+        message: `There was an error while retrieving restaurants. ${error} `,
+        type: 'error',
+        style: GlobalStyles.flashStyle,
+        titleStyle: GlobalStyles.flashTextStyle
+      })
+    }
+  }
+
+
+  const removeProductCategory = async (category) => {
+    try {
+      await remove(category.restaurantId, category.id)
+      await fetchCategories()
+      setCategoryToBeDeleted(null)
+      showMessage({
+        message: `Product category ${category.name} succesfully removed`,
+        type: 'success',
+        style: GlobalStyles.flashStyle,
+        titleStyle: GlobalStyles.flashTextStyle
+      })
+    } catch (error) {
+      console.log(error)
+      setCategoryToBeDeleted(null)
+      showMessage({
+        message: `Category ${category.name} could not be removed.`,
+        type: 'error',
+        style: GlobalStyles.flashStyle,
+        titleStyle: GlobalStyles.flashTextStyle
+      })
+    }
+  }
+  return (
+    <>
+      <FlatList
+        style={styles.container}
+        data={categories}
+        renderItem={renderCategory}
+        ListHeaderComponent={renderHeader}
+        ListEmptyComponent={renderEmptyCategoriesList}
+      />
+      <DeleteModal
+        isVisible={categoryToBeDeleted !== null}
+        onCancel={() => setCategoryToBeDeleted(null)}
+        onConfirm={() => removeProductCategory(categoryToBeDeleted)}>
+        <TextRegular>If the category has products, it cannot be deleted.</TextRegular>
+      </DeleteModal>
+    </>
+  )
+}
 
 const styles = StyleSheet.create({
   container: {
